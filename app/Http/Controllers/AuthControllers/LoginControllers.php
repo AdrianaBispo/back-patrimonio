@@ -33,13 +33,4 @@ class LoginControllers extends Controller
         return response()->json(['access_token' => $token, 'token_type' => 'bearer']);
     }
 
-    public function logout(Request $request)
-    {
-        try {
-            JWTAuth::invalidate(JWTAuth::parseToken());
-            return response()->json(['message' => 'Logout successful']);
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'Erro ao fazer logout'], 500);
-        }
-    }
 }
