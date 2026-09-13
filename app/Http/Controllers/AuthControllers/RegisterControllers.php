@@ -12,18 +12,24 @@ class RegisterControllers extends Controller
     public function register(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'nome' => 'required|string|max:255',
+            'celular' => 'required|string|max:20',
+            'departamento_id' => 'required|uuid|exists:departamentos,id',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ], [
-            'name.required' => 'O nome é obrigatório',
-            'name.string' => 'O nome deve ser uma string',
-            'name.max' => 'O nome deve ter no máximo 255 caracteres',
+            'nome.required' => 'O nome é obrigatório',
+            'nome.string' => 'O nome deve ser uma string',
+            'nome.max' => 'O nome deve ter no máximo 255 caracteres',
+            'celular.required' => 'O celular é obrigatório',
+            'departamento_id.required' => 'O departamento é obrigatório',
+            'departamento_id.exists' => 'O departamento informado não existe',
             'email.required' => 'O email é obrigatório',
             'email.email' => 'O email deve ser um email válido',
             'email.max' => 'O email deve ter no máximo 255 caracteres',
             'email.unique' => 'O email já está em uso',
             'password.required' => 'A senha é obrigatória',
+            'password.min' => 'A senha deve ter no mínimo 8 caracteres',
         ]);
 
         try {
