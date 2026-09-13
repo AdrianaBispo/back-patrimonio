@@ -1,58 +1,186 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Back Patrimônio
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API backend do sistema de patrimônio, construída com Laravel e autenticação JWT.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.3+
+- Laravel 13
+- [tymon/jwt-auth](https://github.com/tymondesigns/jwt-auth) para autenticação
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Pré-requisitos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.3+
+- Composer
+- Banco de dados configurado no `.env` (MySQL/PostgreSQL/SQLite)
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Instalação
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env   # se ainda não existir .env
+php artisan key:generate
+php artisan jwt:secret
+php artisan migrate
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+A API fica disponível em `http://127.0.0.1:8000`.
 
-## Contributing
+> Antes de registrar usuários, é necessário existir ao menos um **departamento** na tabela `departamentos` (o campo `departamento_id` é obrigatório).
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Autenticação
 
-## Code of Conduct
+As rotas de auth ficam sob o prefixo `/api/auth`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Rotas protegidas exigem o header:
 
-## Security Vulnerabilities
+```http
+Authorization: Bearer {access_token}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Endpoints
 
-## License
+| Método | Rota | Auth | Descrição |
+|--------|------|------|-----------|
+| `POST` | `/api/auth/register` | Não | Criar usuário |
+| `POST` | `/api/auth/login` | Não | Login e emissão de token |
+| `POST` | `/api/auth/logout` | Sim | Invalidar token |
+| `GET` | `/api/auth/user` | Sim | Usuário autenticado |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+### Registrar usuário
+
+`POST /api/auth/register`
+
+**Body (JSON):**
+
+| Campo | Tipo | Obrigatório | Regras |
+|-------|------|-------------|--------|
+| `nome` | string | Sim | máx. 255 |
+| `celular` | string | Sim | máx. 20 |
+| `departamento_id` | uuid | Sim | deve existir em `departamentos` |
+| `email` | string | Sim | email válido e único |
+| `password` | string | Sim | mín. 8 caracteres |
+
+```json
+{
+  "nome": "João Silva",
+  "celular": "11999999999",
+  "departamento_id": "01a09cd1-d877-7033-9209-cffdd4a6d341",
+  "email": "joao@email.com",
+  "password": "senha1234"
+}
+```
+
+**Resposta `201`:**
+
+```json
+{
+  "message": "Usuário registrado com sucesso"
+}
+```
+
+---
+
+### Login
+
+`POST /api/auth/login`
+
+**Body (JSON):**
+
+| Campo | Tipo | Obrigatório | Regras |
+|-------|------|-------------|--------|
+| `email` | string | Sim | email válido |
+| `password` | string | Sim | mín. 8 caracteres |
+
+```json
+{
+  "email": "joao@email.com",
+  "password": "senha1234"
+}
+```
+
+**Resposta `200`:**
+
+```json
+{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "token_type": "bearer"
+}
+```
+
+**Erros comuns:**
+
+- `401` — credenciais inválidas
+- `422` — validação de campos
+
+---
+
+### Logout
+
+`POST /api/auth/logout`
+
+Header: `Authorization: Bearer {token}`
+
+**Resposta `200`:**
+
+```json
+{
+  "message": "Logout successful"
+}
+```
+
+---
+
+### Usuário autenticado
+
+`GET /api/auth/user`
+
+Header: `Authorization: Bearer {token}`
+
+Retorna os dados do usuário logado.
+
+## Estrutura principal
+
+```
+app/
+  Http/Controllers/AuthControllers/   # login, register, logout, user
+  Middleware/JwtMiddleware.php        # proteção JWT (alias jwt.auth)
+  Models/User.php
+  Models/Departamento.php
+routes/
+  api.php                             # rotas da API
+database/migrations/                  # users, departamentos, etc.
+```
+
+## Exemplos com cURL
+
+```bash
+# Registro
+curl -X POST http://127.0.0.1:8000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d "{\"nome\":\"João Silva\",\"celular\":\"11999999999\",\"departamento_id\":\"UUID_DO_DEPARTAMENTO\",\"email\":\"joao@email.com\",\"password\":\"senha1234\"}"
+
+# Login
+curl -X POST http://127.0.0.1:8000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d "{\"email\":\"joao@email.com\",\"password\":\"senha1234\"}"
+
+# Usuário autenticado
+curl http://127.0.0.1:8000/api/auth/user \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Accept: application/json"
+
+# Logout
+curl -X POST http://127.0.0.1:8000/api/auth/logout \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Accept: application/json"
+```
+
+## Licença
+
+MIT
