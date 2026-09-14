@@ -9,6 +9,7 @@ class AuthController extends Controller
     public function __invoke(Request $request)
     {
         $user = $request->user();
-        return response()->json(compact('user'));
+        $token = $request->cookie('access_token');
+        return response()->json(compact('user', 'token'));
     } 
 }
