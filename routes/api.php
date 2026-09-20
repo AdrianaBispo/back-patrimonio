@@ -9,5 +9,5 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [LoginControllers::class, 'login']);
     Route::post('/register', [RegisterControllers::class, 'register']);
     Route::post('/logout', [LogoutControllers::class, 'logout'])->middleware('jwt.auth');
-    Route::get('/user', [AuthController::class, 'user'])->middleware('jwt.auth');
+    Route::get('/user', [AuthController::class, '__invoke']);
 });
