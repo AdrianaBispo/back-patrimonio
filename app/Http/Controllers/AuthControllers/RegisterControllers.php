@@ -17,6 +17,7 @@ class RegisterControllers extends Controller
             'departamento_id' => 'required|uuid|exists:departamentos,id',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
+            'roles' => 'required|array|exists:roles,id',
         ], [
             'nome.required' => 'O nome é obrigatório',
             'nome.string' => 'O nome deve ser uma string',
@@ -30,6 +31,9 @@ class RegisterControllers extends Controller
             'email.unique' => 'O email já está em uso',
             'password.required' => 'A senha é obrigatória',
             'password.min' => 'A senha deve ter no mínimo 8 caracteres',
+            'roles.required' => 'O perfil de acesso é obrigatório',
+            'roles.array' => 'O perfil de acesso deve ser um array',
+            'roles.exists' => 'O perfil de acesso informado não existe',
         ]);
 
         try {
