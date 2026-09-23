@@ -45,7 +45,7 @@ class RegisterControllers extends Controller
 
         try {
             $user = JWTAuth::setToken($token)->authenticate();
-            if ($user->role !== 'admin') {
+            if ($user->role !== 'Administrador') {
                 return response()->json(['message' => 'Você não tem permissão para registrar usuários'], 403);
             }
             $newUser = User::create($data, [
