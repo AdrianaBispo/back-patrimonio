@@ -7,6 +7,8 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
+use Illuminate\Auth\AuthenticationException;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,8 +24,24 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
-        );
-    })->create();
+    ->withExceptions(function (Exceptions $exceptions) {
+        
+    $exceptions->render(function (AuthenticationException $e, Request $request) {
+        if ($request->is('api/*') || $request->wantsJson()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Não autenticado. Forneça um token JWT válido.'
+            ], 401);
+        }
+    });
+
+    $exceptions->render(function (UnauthorizedException $e, Request $request) {
+        if ($request->is('api/*') || $request->wantsJson()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Acesso negado: não possui a role necessária para aceder a este recurso.'
+            ], 403);
+        }
+    });
+
+})->create();
