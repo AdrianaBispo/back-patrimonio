@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\AuthControllers;
+namespace App\Http\Controllers\UserControllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class EditUserControllers extends Controller
+class EditUserController extends Controller
 {
     public function editUser(Request $request, string $id)
     {
