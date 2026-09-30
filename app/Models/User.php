@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['nome', 'celular', 'departamento_id', 'email', 'password', 'roles'])]
+#[Fillable(['nome', 'celular', 'cpf', 'email', 'password', 'roles', 'ativo'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements JWTSubject
 {
