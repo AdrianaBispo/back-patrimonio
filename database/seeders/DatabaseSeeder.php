@@ -25,8 +25,8 @@ class DatabaseSeeder extends Seeder
     private function createRoles(): array
     {
         return [
-            'admin' => Role::create(['name' => 'admin']),
-            'user' => Role::create(['name' => 'user']),
+            'admin' => Role::firstOrCreate(['name' => 'admin']),
+            'user' => Role::firstOrCreate(['name' => 'user']),
         ];
     }
 
@@ -52,41 +52,54 @@ class DatabaseSeeder extends Seeder
 
     }
 
-
     private function createUsers(): array
     {
         $users = [
             [
-                'name' => 'Admin',
+                'nome' => 'Admin',
                 'email' => 'admin@example.com',
                 'password' => 'password',
                 'role' => 'admin',
             ],
             [
-                'name' => 'User',
+                'nome' => 'User',
                 'email' => 'user@example.com',
                 'password' => 'password',
                 'role' => 'user',
             ],
         ];
+    
         $createdUsers = [];
+    
         foreach ($users as $userData) {
-            $user = User::create([
-                'name' => $userData['name'],
-                'email' => $userData['email'],
-                'password' => bcrypt($userData['password']),
-            ]);
+            $user = User::updateOrCreate(
+                [
+                    'email' => $userData['email'],
+                ],
+                [
+                    'nome' => $userData['nome'],
+                    'password' => bcrypt($userData['password']),
+                    'celular' => '',
+                    'departamento_id' => null,
+                    'email_verified_at' => null,
+                    'remember_token' => null,
+                ]
+            );
+    
             if (!isset($createdUsers[$userData['role']])) {
                 $createdUsers[$userData['role']] = [];
             }
+    
             $createdUsers[$userData['role']][] = $user;
         }
-
+    
         return $createdUsers;
     }
 
     private function assignRolesToUsers(array $users, array $roles): void
     {
+        dd($roles);
+    
         foreach ($users as $role => $roleUsers) {
             foreach ($roleUsers as $user) {
                 $user->assignRole($roles[$role]);
