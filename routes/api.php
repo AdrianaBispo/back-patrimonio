@@ -8,6 +8,7 @@ use App\Http\Controllers\UserControllers\EditUserController;
 use App\Http\Controllers\RoleControllers\GetAllRolesControlles;
 use App\Http\Controllers\UserControllers\DisableUserController;
 use App\Http\Controllers\Permissions\Teste;
+use App\Http\Controllers\Permissions\CreatePermissionController;
 //todo: criar politicas de Roles para cada controller
 //todo: validar a quatidade de tentativas de login que o usuario pode fazer
 
@@ -21,7 +22,7 @@ Route::prefix('auth')->group(function () {
 }); 
 Route::prefix('permissions')->group(function () {
     Route::get('/all', [Teste::class, 'index']);
-    Route::post('/create', [Teste::class, 'create']);
+    Route::post('/create', [CreatePermissionController::class, 'create']);
     Route::put('/update/{id}', [Teste::class, 'update']);
     Route::delete('/delete/{id}', [Teste::class, 'destroy']);
 });
