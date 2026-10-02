@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('nome');
             $table->string('celular');
             $table->foreignUuid('departamento_id')
+            ->nullable()
             ->references('id')
-            ->on('departamentos');            
+            ->on('departamentos');
+            $table->string('cpf')->unique()->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
