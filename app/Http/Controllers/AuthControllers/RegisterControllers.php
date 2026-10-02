@@ -27,7 +27,7 @@ class RegisterControllers extends Controller
             return response()->json(['message' => 'Token inválido'], 401);
         }
 
-        if (! $authUser->hasRole('Administrador')) {
+        if ($authUser->hasRole('users')) {
             return response()->json(['message' => 'Você não tem permissão para registrar usuários'], 403);
         }
 
