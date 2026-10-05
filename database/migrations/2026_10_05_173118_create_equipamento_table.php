@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('nome');
             $table->string('descricao');
-            $table->string('serie');
+            $table->string('serie')->unique();
             $table->foreignId('status_id')->constrained('status');
             $table->string('imagem_url');
             $table->foreignId('usuario_id')->constrained('users');
