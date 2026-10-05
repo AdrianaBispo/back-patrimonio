@@ -13,7 +13,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CreateEquipamentsController extends Controller
 {
-    public function invoke(Request $request)
+    public function __invoke(Request $request)
     {
         $data = $request->validate([
             'nome' => 'required|string|max:255',
@@ -57,7 +57,7 @@ class CreateEquipamentsController extends Controller
                 'imagem_url' => $data['imagem_url'],
                 'usuario_id' => $usuario->id,
             ]);
-            
+
             $equipamento->save();
             return response()->json(['message' => 'Equipamento criado com sucesso', 'equipamento' => $equipamento], 201);
        
