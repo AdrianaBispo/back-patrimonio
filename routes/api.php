@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthControllers\AuthController;
 use App\Http\Controllers\AuthControllers\LoginControllers;
 use App\Http\Controllers\AuthControllers\RegisterControllers;
 use App\Http\Controllers\AuthControllers\LogoutControllers;
+use App\Http\Controllers\EquipamentoControllers\CreateEquipamentsController;
 use App\Http\Controllers\UserControllers\EditUserController;
 use App\Http\Controllers\RoleControllers\GetAllRolesControlles;
 use App\Http\Controllers\UserControllers\DisableUserController;
@@ -21,12 +22,18 @@ Route::prefix('auth')->group(function () {
     Route::delete('/users/{id}', [DisableUserController::class, 'disableUser']);
 }); 
 Route::prefix('permissions')->group(function () {
-    Route::get('/all', [Teste::class, 'index']);
-    Route::post('/create', [CreatePermissionController::class, 'create']);
-    Route::put('/update/{id}', [Teste::class, 'update']);
-    Route::delete('/delete/{id}', [Teste::class, 'destroy']);
+    // Route::get('/all', [Teste::class, 'index']);
+    Route::post('/create', [CreatePermissionController::class, 'store'])->middleware('cookie.jwt.auth');
+    // Route::put('/update/{id}', [Teste::class, 'update']);
+    // Route::delete('/delete/{id}', [Teste::class, 'destroy']);
 });
 Route::prefix('roles')->group(function () {
     Route::get('/all', [GetAllRolesControlles::class, '__invoke']);
     // ->middleware('role:Administrador');
 }); 
+Route::prefix('equipaments')->group(function () {
+//     Route::get('/all', [GetAllEquipamentsControlles::class, '__invoke']);
+    Route::post('/create', [CreateEquipamentsController::class, 'invoke'])->middleware('cookie.jwt.auth')->permissions('create-equipaments');
+//     Route::put('/update/{id}', [UpdateEquipamentsController::class, 'update']);
+//     Route::delete('/delete/{id}', [DeleteEquipamentsController::class, 'destroy']);
+});
