@@ -19,7 +19,7 @@ class CreateEquipamentsController extends Controller
             'nome' => 'required|string|max:255',
             'descricao' => 'required|string|max:255',
             'serie' => 'required|string|max:255',
-            'status_id' => 'required|uuid|exists:status,id',
+            'status_id' => 'required|integer|exists:status,id',
             'imagem_url' => 'required|string|max:255',
             'usuario_id' => 'required|uuid|exists:users,id',
         ], [
@@ -60,8 +60,7 @@ class CreateEquipamentsController extends Controller
 
             $equipamento->save();
             return response()->json(['message' => 'Equipamento criado com sucesso', 'equipamento' => $equipamento], 201);
-       
-            } catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['message' => 'Erro ao criar equipamento: ' . $e->getMessage()], 500);
         }
     }
