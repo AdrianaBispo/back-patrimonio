@@ -33,7 +33,7 @@ Route::prefix('roles')->group(function () {
 }); 
 Route::prefix('equipaments')->group(function () {
 //     Route::get('/all', [GetAllEquipamentsControlles::class, '__invoke']);
-    Route::post('/create', [CreateEquipamentsController::class, 'invoke'])->middleware('cookie.jwt.auth')->permissions('create-equipaments');
+    Route::post('/create', [CreateEquipamentsController::class, '__invoke'])->middleware('cookie.jwt.auth')->permissions('create-equipaments');
 //     Route::put('/update/{id}', [UpdateEquipamentsController::class, 'update']);
 //     Route::delete('/delete/{id}', [DeleteEquipamentsController::class, 'destroy']);
 });
