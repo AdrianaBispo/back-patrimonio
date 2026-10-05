@@ -3,13 +3,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthControllers\AuthController;
 use App\Http\Controllers\AuthControllers\LoginControllers;
 use App\Http\Controllers\AuthControllers\RegisterControllers;
-use App\Http\Controllers\AuthControllers\LogoutControllers;
-use App\Http\Controllers\EquipamentoControllers\CreateEquipamentsController;
+use App\Http\Controllers\AuthControllers\LogoutControllers;;
 use App\Http\Controllers\UserControllers\EditUserController;
 use App\Http\Controllers\RoleControllers\GetAllRolesControlles;
 use App\Http\Controllers\UserControllers\DisableUserController;
-use App\Http\Controllers\Permissions\Teste;
 use App\Http\Controllers\Permissions\CreatePermissionController;
+
+#EquipamentoControllers
+use App\Http\Controllers\EquipamentoControllers\CreateEquipamentsController;
+use App\Http\Controllers\EquipamentoControllers\GetAllEquipamentsController;
 //todo: criar politicas de Roles para cada controller
 //todo: validar a quatidade de tentativas de login que o usuario pode fazer
 
@@ -32,7 +34,7 @@ Route::prefix('roles')->group(function () {
     // ->middleware('role:Administrador');
 }); 
 Route::prefix('equipaments')->group(function () {
-//     Route::get('/all', [GetAllEquipamentsControlles::class, '__invoke']);
+     Route::get('/all', [GetAllEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-equipaments']);
     Route::post('/create', [CreateEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:create-equipaments']);
 //     Route::put('/update/{id}', [UpdateEquipamentsController::class, 'update']);
 //     Route::delete('/delete/{id}', [DeleteEquipamentsController::class, 'destroy']);
