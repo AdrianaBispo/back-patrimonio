@@ -18,7 +18,7 @@ class CreateEquipamentsController extends Controller
         $data = $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'required|string|max:255',
-            'serie' => 'required|string|max:255',
+            'serie' => 'required|string|max:255|regex:/^[0-9]+$/',
             'status_id' => 'required|integer|exists:status,id',
             'imagem_url' => 'required|string|max:255',
             'usuario_id' => 'required|uuid|exists:users,id',
@@ -31,6 +31,7 @@ class CreateEquipamentsController extends Controller
             'descricao.max' => 'A descricao deve ter no máximo 255 caracteres',
             'serie.required' => 'A serie é obrigatória',
             'serie.string' => 'A serie deve ser uma string',
+            'serie.regex' => 'O número de série deve conter apenas números.',
             'serie.unique' => 'A serie já existe',
             'serie.max' => 'A serie deve ter no máximo 255 caracteres',
             'status_id.required' => 'O status é obrigatório',
