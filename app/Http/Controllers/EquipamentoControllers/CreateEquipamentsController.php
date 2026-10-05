@@ -31,6 +31,7 @@ class CreateEquipamentsController extends Controller
             'descricao.max' => 'A descricao deve ter no máximo 255 caracteres',
             'serie.required' => 'A serie é obrigatória',
             'serie.string' => 'A serie deve ser uma string',
+            'serie.unique' => 'A serie já existe',
             'serie.max' => 'A serie deve ter no máximo 255 caracteres',
             'status_id.required' => 'O status é obrigatório',
             'status_id.uuid' => 'O status deve ser um UUID',
