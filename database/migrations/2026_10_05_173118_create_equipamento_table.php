@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('equipamentos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('nome');
-            $table->string('descricao');
-            $table->string('serie')->unique();
-            $table->foreignId('status_id')->constrained('status');
-            $table->string('imagem_url');
-            $table->foreignId('usuario_id')->constrained('users');
+            $table->string('nome')->max(255);
+            $table->string('descricao')->max(255);
+            $table->string('serie')->unique()->max(255);
+            $table->foreignId('status_id')->constrained('status')->references('id')->on('status');
+            $table->string('imagem_url')->max(255);
+            $table->foreignUuid('usuario_id')->constrained('users')->references('id')->on('users');
         });
     }
 
