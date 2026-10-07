@@ -9,7 +9,7 @@ use App\Models\Equipaments;
 use App\Models\Status;
 use App\Models\Users;
 
-class GetHistoricEquipaments extends Controller
+class GetHistoricEquipamentsController extends Controller
 {
     public function __invoke(Request $request)
     {
