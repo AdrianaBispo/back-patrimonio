@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('equipament_id')->constrained('equipaments')->references('id')->on('equipaments');
             $table->foreignId('status_id')->constrained('status')->references('id')->on('status');
             $table->foreignUuid('user_id')->constrained('users')->references('id')->on('users');
-            $table->dateTime('date_time');
             $table->timestamps();
             $table->softDeletes();
         });
