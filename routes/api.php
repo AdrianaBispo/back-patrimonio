@@ -13,6 +13,7 @@ use App\Http\Controllers\Permissions\CreatePermissionController;
 use App\Http\Controllers\EquipamentoControllers\CreateEquipamentsController;
 use App\Http\Controllers\EquipamentoControllers\GetAllEquipamentsController;
 use App\Http\Controllers\EquipamentoControllers\UpdateEquipamentsController;
+use App\Http\Controllers\EquipamentoControllers\GetEquipamentsController;
 //todo: criar politicas de Roles para cada controller
 //todo: validar a quatidade de tentativas de login que o usuario pode fazer
 
@@ -36,6 +37,7 @@ Route::prefix('roles')->group(function () {
 }); 
 Route::prefix('equipaments')->group(function () {
     Route::get('/all', [GetAllEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-equipaments']);
+    Route::get('/get', [GetEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-equipaments']);
     Route::post('/create', [CreateEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:create-equipaments']);
     Route::put('/update/{id}', [UpdateEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:update-equipaments']);
 });
