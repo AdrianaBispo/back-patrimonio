@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class HistoricoEquipamento extends Model
+class HistoricEquipaments extends Model
 {
     use hasFactory;
     protected $primaryKey = 'id';
-    protected $table = 'historico_equipamentos';
+    protected $table = 'historic_equipaments';
 
-    protected $fillable = ['equipamento_id', 'status_id', 'usuario_id', 'data_hora'];
+    protected $fillable = ['equipament_id', 'status_id', 'user_id', 'date_time'];
 
-    public function equipamento()
+    public function equipament()
     {
         return $this->belongsTo(Equipamento::class);
     }
@@ -23,7 +23,7 @@ class HistoricoEquipamento extends Model
         return $this->belongsTo(Status::class);
     }
 
-    public function usuario()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
