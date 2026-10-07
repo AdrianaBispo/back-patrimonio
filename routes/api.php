@@ -14,6 +14,10 @@ use App\Http\Controllers\EquipamentoControllers\CreateEquipamentsController;
 use App\Http\Controllers\EquipamentoControllers\GetAllEquipamentsController;
 use App\Http\Controllers\EquipamentoControllers\UpdateEquipamentsController;
 use App\Http\Controllers\EquipamentoControllers\GetEquipamentsController;
+#HistoricEquipamentsControllers
+use App\Http\Controllers\HistoricEquipaments\GetAllHistoricEquipamentsController;
+use App\Http\Controllers\HistoricEquipaments\GetHistoricEquipamentsController;
+use App\Http\Controllers\HistoricEquipaments\CreateHistoricEquipamentsController;
 //todo: criar politicas de Roles para cada controller
 //todo: validar a quatidade de tentativas de login que o usuario pode fazer
 
@@ -40,4 +44,9 @@ Route::prefix('equipaments')->group(function () {
     Route::get('/get', [GetEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-equipaments']);
     Route::post('/create', [CreateEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:create-equipaments']);
     Route::put('/update/{id}', [UpdateEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:update-equipaments']);
+});
+Route::prefix('historic_equipaments')->group(function () {
+    Route::get('/all', [GetAllHistoricEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-historic-equipaments']);
+    Route::get('/get', [GetHistoricEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-historic-equipaments']);
+    Route::post('/create', [CreateHistoricEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:create-historic-equipaments']);
 });
