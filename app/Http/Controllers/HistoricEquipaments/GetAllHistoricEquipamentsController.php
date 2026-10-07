@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\HistoricEquipaments;
 
 use Illuminate\Http\Request;
 use App\Models\HistoricEquipaments; 
@@ -8,12 +8,12 @@ use App\Http\Controllers\Controller;
 
 
 
-class GetAllHistoricEquipaments extends Controller
+class GetAllHistoricEquipamentsController extends Controller
 {
     public function __invoke(Request $request)
     {
         $perPage = (int) $request['per_page'] ?? 0;
-        
+
         $query = HistoricEquipaments::query()->
         leftJoin('equipaments', 'historic_equipaments.equipament_id', '=', 'equipaments.id')->
         leftJoin('status', 'historic_equipaments.status_id', '=', 'status.id')->
