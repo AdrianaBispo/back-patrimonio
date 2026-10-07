@@ -38,5 +38,4 @@ Route::prefix('equipaments')->group(function () {
     Route::get('/all', [GetAllEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-equipaments']);
     Route::post('/create', [CreateEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:create-equipaments']);
     Route::put('/update/{id}', [UpdateEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:update-equipaments']);
-//     Route::delete('/delete/{id}', [DeleteEquipamentsController::class, 'destroy']);
 });
