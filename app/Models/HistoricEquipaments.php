@@ -11,7 +11,7 @@ class HistoricEquipaments extends Model
     protected $primaryKey = 'id';
     protected $table = 'historic_equipaments';
 
-    protected $fillable = ['equipament_id', 'status_id', 'user_id', 'date_time'];
+    protected $fillable = ['equipament_id', 'status_id', 'user_id'];
 
     public function equipament()
     {
