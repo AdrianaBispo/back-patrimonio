@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthControllers\LogoutControllers;;
 use App\Http\Controllers\UserControllers\EditUserController;
 use App\Http\Controllers\RoleControllers\GetAllRolesControlles;
 use App\Http\Controllers\UserControllers\DisableUserController;
+#RoleControllers
+use App\Http\Controllers\RoleControllers\UpdateRolePermissionsController;
 use App\Http\Controllers\Permissions\CreatePermissionController;
 
 #EquipamentoControllers
@@ -18,7 +20,6 @@ use App\Http\Controllers\EquipamentoControllers\GetEquipamentsController;
 use App\Http\Controllers\HistoricEquipaments\GetAllHistoricEquipamentsController;
 use App\Http\Controllers\HistoricEquipaments\GetHistoricEquipamentsController;
 use App\Http\Controllers\HistoricEquipaments\CreateHistoricEquipamentsController;
-//todo: criar politicas de Roles para cada controller
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [LoginControllers::class, 'login'])->middleware('throttle:5,1');
@@ -33,7 +34,8 @@ Route::prefix('permissions')->group(function () {
 });
 Route::prefix('roles')->group(function () {
     Route::get('/all', [GetAllRolesControlles::class, '__invoke'])->middleware('cookie.jwt.auth');
-}); 
+    Route::put('/update/{id}', [UpdateRolePermissionsController::class, '__invoke'])->middleware('cookie.jwt.auth');
+});
 Route::prefix('equipaments')->group(function () {
     Route::get('/all', [GetAllEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-equipaments']);
     Route::get('/get', [GetEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-equipaments']);
