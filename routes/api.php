@@ -36,7 +36,6 @@ Route::prefix('permissions')->group(function () {
 });
 Route::prefix('roles')->group(function () {
     Route::get('/all', [GetAllRolesControlles::class, '__invoke'])->middleware('cookie.jwt.auth');
-    // ->middleware('role:Administrador');
 }); 
 Route::prefix('equipaments')->group(function () {
     Route::get('/all', [GetAllEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-equipaments']);
