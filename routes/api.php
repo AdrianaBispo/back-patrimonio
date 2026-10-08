@@ -29,10 +29,7 @@ Route::prefix('auth')->group(function () {
     Route::delete('/users/{id}', [DisableUserController::class, 'disableUser'])->middleware('cookie.jwt.auth');
 }); 
 Route::prefix('permissions')->group(function () {
-    // Route::get('/all', [Teste::class, 'index']);
     Route::post('/create', [CreatePermissionController::class, 'store'])->middleware('cookie.jwt.auth');
-    // Route::put('/update/{id}', [Teste::class, 'update']);
-    // Route::delete('/delete/{id}', [Teste::class, 'destroy']);
 });
 Route::prefix('roles')->group(function () {
     Route::get('/all', [GetAllRolesControlles::class, '__invoke'])->middleware('cookie.jwt.auth');
