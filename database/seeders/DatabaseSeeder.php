@@ -37,6 +37,13 @@ class DatabaseSeeder extends Seeder
             'read-users',
             'update-users',
             'delete-users',
+            'create-equipaments',
+            'update-equipaments',
+            'get-all-equipaments',
+            'get-equipaments',
+            'create-historic-equipaments',
+            'get-all-historic-equipaments',
+            'get-historic-equipaments',
         ];
         foreach ($permissionsNames as $permissionName) {
             Permission::firstOrCreate(['name' => $permissionName]);
