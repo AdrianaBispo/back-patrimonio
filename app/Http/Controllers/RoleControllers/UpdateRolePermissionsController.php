@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role;
 
 class UpdateRolePermissionsController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, string $id)
     {
         $data = $request->validate([
             'role_id' => 'required|uuid|exists:roles,id',
@@ -16,7 +16,7 @@ class UpdateRolePermissionsController extends Controller
             'permissions.*' => 'required|uuid|exists:permissions,id',
         ]);
 
-        $role = Role::findOrFail($data['role_id']);
+        $role = Role::findOrFail($id);
 
         try {
             $role->permissions()->sync($data['permissions']);
