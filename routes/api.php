@@ -22,12 +22,12 @@ use App\Http\Controllers\HistoricEquipaments\CreateHistoricEquipamentsController
 //todo: validar a quatidade de tentativas de login que o usuario pode fazer
 
 Route::prefix('auth')->group(function () {
-    Route::post('/login', [LoginControllers::class, 'login']);
-    Route::post('/register', [RegisterControllers::class, 'register']);
-    Route::post('/logout', [LogoutControllers::class, 'logout'])->middleware('jwt.auth');
-    Route::get('/user', [AuthController::class, '__invoke']);
-    Route::put('/users/{id}', [EditUserController::class, 'editUser']);
-    Route::delete('/users/{id}', [DisableUserController::class, 'disableUser']);
+    Route::post('/login', [LoginControllers::class, 'login'])->middleware('throttle:5,1');
+    Route::post('/register', [RegisterControllers::class, 'register'])->middleware('cookie.jwt.auth', 'throttle:5,1');
+    Route::post('/logout', [LogoutControllers::class, 'logout'])->middleware('cookie.jwt.auth');
+    Route::get('/user', [AuthController::class, '__invoke'])->middleware('cookie.jwt.auth');
+    Route::put('/users/{id}', [EditUserController::class, 'editUser'])->middleware('cookie.jwt.auth');
+    Route::delete('/users/{id}', [DisableUserController::class, 'disableUser'])->middleware('cookie.jwt.auth');
 }); 
 Route::prefix('permissions')->group(function () {
     // Route::get('/all', [Teste::class, 'index']);
@@ -36,7 +36,7 @@ Route::prefix('permissions')->group(function () {
     // Route::delete('/delete/{id}', [Teste::class, 'destroy']);
 });
 Route::prefix('roles')->group(function () {
-    Route::get('/all', [GetAllRolesControlles::class, '__invoke']);
+    Route::get('/all', [GetAllRolesControlles::class, '__invoke'])->middleware('cookie.jwt.auth');
     // ->middleware('role:Administrador');
 }); 
 Route::prefix('equipaments')->group(function () {
