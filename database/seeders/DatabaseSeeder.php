@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $permissions = $this->createPermissions();
         $this->assignPermissionsToRoles($roles, $permissions);
         $users = $this->createUsers();
-        $this->assignRolesToUsers($roles, $users);
+        $this->assignRolesToUsers($users, $roles);
     }
 
     private function createRoles(): array
@@ -105,8 +105,6 @@ class DatabaseSeeder extends Seeder
 
     private function assignRolesToUsers(array $users, array $roles): void
     {
-        dd($roles);
-    
         foreach ($users as $role => $roleUsers) {
             foreach ($roleUsers as $user) {
                 $user->assignRole($roles[$role]);
