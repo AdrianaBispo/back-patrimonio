@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthControllers\LogoutControllers;;
 use App\Http\Controllers\UserControllers\EditUserController;
 use App\Http\Controllers\RoleControllers\GetAllRolesControlles;
 use App\Http\Controllers\UserControllers\DisableUserController;
+use App\Http\Controllers\UserControllers\GetAllUsersController;
 #RoleControllers
 use App\Http\Controllers\RoleControllers\UpdateRolePermissionsController;
 use App\Http\Controllers\Permissions\CreatePermissionController;
@@ -28,6 +29,7 @@ Route::prefix('auth')->group(function () {
     Route::get('/user', [AuthController::class, '__invoke'])->middleware('cookie.jwt.auth');
     Route::put('/users/{id}', [EditUserController::class, 'editUser'])->middleware('cookie.jwt.auth');
     Route::delete('/users/{id}', [DisableUserController::class, 'disableUser'])->middleware('cookie.jwt.auth');
+    Route::get('/users', [GetAllUsersController::class, '__invoke'])->middleware('cookie.jwt.auth');
 }); 
 Route::prefix('permissions')->group(function () {
     Route::post('/create', [CreatePermissionController::class, 'store'])->middleware('cookie.jwt.auth');
