@@ -16,7 +16,8 @@ class GetAllUsersController extends Controller
         if ($perPage > 0) {
             $query = User::query()
             ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
-            ->select('users.*', 'roles.name as role_name')
+            ->leftJoin('departamentos', 'users.departamento_id', '=', 'departamentos.id')
+            ->select('users.*', 'roles.name as role_name', 'departamentos.name as departamento_name')
             ->orderBy('users.nome asc');
             return response()->json($query->paginate($perPage));
         }
