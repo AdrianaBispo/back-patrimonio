@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
-class GetUsersByNameController extends Controller
+class GetUsersController extends Controller
 {
     public function __invoke(Request $request)
     {
