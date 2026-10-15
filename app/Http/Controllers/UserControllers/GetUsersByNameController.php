@@ -13,7 +13,7 @@ class GetUsersByNameController extends Controller
     {
         $perPage = (int) $request->query('per_page', 0);
         $name = (string) $request->query('name');
-       
+        $id = (string) $request->query('id');
         $query = User::query()
         // ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
         ->leftJoin('departamentos', 'users.departamento_id', '=', 'departamentos.id')
@@ -43,8 +43,10 @@ class GetUsersByNameController extends Controller
         END AS cpf
     "),
     'departamentos.nome as departamento_name',
+    'users.status'
     )
         ->where('users.nome',  'like', '%' . $name . '%')
+        ->orWhere('users.id', $id)
         ->orderBy('users.nome');
         if ($perPage > 0) {   
             return response()->json($query->paginate($perPage));
