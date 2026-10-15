@@ -29,14 +29,13 @@ class DisableUserController extends Controller
         }
         
         $user = User::findOrFail($id);
-        $isAdmin = $authUser->hasRole('Administrador');
-        $isSelf = (string) $authUser->id === (string) $user->id;
+        $isAdmin = $authUser->hasRole('admin');
 
-        if (! $isAdmin && ! $isSelf) {
+        if (! $isAdmin) {
             return response()->json(['message' => 'Você não tem permissão para desabilitar este usuário'], 403);
         }
 
-        $user->status = 'inativo';
+        $user->status = false;
         $user->save();
         return response()->json(['message' => 'Usuário inativado com sucesso'], 200);
 
