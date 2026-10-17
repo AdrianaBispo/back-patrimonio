@@ -13,6 +13,6 @@ class Status extends Model
     protected $primaryKey = 'id';
     protected $table = 'status';
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['name'];
 
 }
