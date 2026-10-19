@@ -13,7 +13,7 @@ class Equipamento extends Model
     protected $primaryKey = 'id';
     protected $table = 'equipamentos';
 
-    protected $fillable = ['nome', 'descricao', 'serie', 'status_id', 'imagem_url', 'usuario_id'];
+    protected $fillable = ['name', 'description', 'serie', 'status_id', 'imagem_url', 'usr_id'];
 
     public function status()
     {

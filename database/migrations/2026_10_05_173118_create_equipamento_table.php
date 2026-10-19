@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('equipamentos', function (Blueprint $table) {
-            $table->id();
+        Schema::create('equipament', function (Blueprint $table) {
+            $table->uuid('eqi_id');
             $table->timestamps();
-            $table->string('nome')->max(255);
-            $table->string('descricao')->max(255);
-            $table->string('serie')->unique()->max(255);
-            $table->foreignId('status_id')->constrained('status')->references('id')->on('status');
+            $table->string('eqi_name')->max(255);
+            $table->string('eqi_descricao')->max(255);
+            $table->string('eqi_serie')->unique()->max(255);
+            $table->foreignId('eqi_status_id')->constrained('status')->references('id')->on('status');
             $table->string('imagem_url')->max(255);
             $table->foreignUuid('usuario_id')->constrained('users')->references('id')->on('users');
         });
