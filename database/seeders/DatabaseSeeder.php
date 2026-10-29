@@ -65,13 +65,13 @@ class DatabaseSeeder extends Seeder
             [
                 'nome' => 'Admin',
                 'email' => 'admin@example.com',
-                'password' => 'password',
+                'password' => 'senha1234',
                 'role' => 'admin',
             ],
             [
                 'nome' => 'User',
                 'email' => 'user@example.com',
-                'password' => 'password',
+                'password' => 'senha1234',
                 'role' => 'user',
             ],
         ];
