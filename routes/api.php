@@ -25,6 +25,7 @@ use App\Http\Controllers\HistoricEquipaments\CreateHistoricEquipamentsController
 #Categoria
 use App\Http\Controllers\CategoriaControllers\CreateCategoriaController;
 use App\Http\Controllers\CategoriaControllers\GetAllCategoriaController;
+use App\Http\Controllers\CategoriaControllers\UpdateCategoriaController;
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [LoginControllers::class, 'login'])->middleware('throttle:5,1');
@@ -58,4 +59,5 @@ Route::prefix('historic_equipaments')->group(function () {
 Route::prefix('categoria')->group(function (){
     Route::post('/create', [CreateCategoriaController::class, '__invoke']);
     Route::get('/all', [GetAllCategoriaController::class, '__invoke']);
+    Route::put('/update/{id}', [UpdateCategoriaController::class, '__invoke']); //->middleware(['cookie.jwt.auth', 'permission:update-categoria']);
 });
