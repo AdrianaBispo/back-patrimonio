@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('categorias', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 70)->unique()->isNotEmpty();
-            $table->string('notas',500)->isEmpty();
-            $table->string('tipo', 2)->isNotEmpty();
+            $table->string('nome', 70)->unique();
+            $table->string('nota', 500)->nullable();
+            $table->string('tipo', 2);
             $table->timestamps();
         });
     }
