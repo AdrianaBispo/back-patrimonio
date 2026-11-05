@@ -24,6 +24,7 @@ use App\Http\Controllers\HistoricEquipaments\GetHistoricEquipamentsController;
 use App\Http\Controllers\HistoricEquipaments\CreateHistoricEquipamentsController;
 #Categoria
 use App\Http\Controllers\CategoriaControllers\CreateCategoriaController;
+use App\Http\Controllers\CategoriaControllers\GetAllCategoriaController;
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [LoginControllers::class, 'login'])->middleware('throttle:5,1');
@@ -56,4 +57,5 @@ Route::prefix('historic_equipaments')->group(function () {
 
 Route::prefix('categoria')->group(function (){
     Route::post('/create', [CreateCategoriaController::class, '__invoke']);
+    Route::get('/all', [GetAllCategoriaController::class, '__invoke']);
 });
