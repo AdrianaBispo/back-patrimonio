@@ -22,6 +22,8 @@ use App\Http\Controllers\EquipamentoControllers\GetEquipamentsController;
 use App\Http\Controllers\HistoricEquipaments\GetAllHistoricEquipamentsController;
 use App\Http\Controllers\HistoricEquipaments\GetHistoricEquipamentsController;
 use App\Http\Controllers\HistoricEquipaments\CreateHistoricEquipamentsController;
+#Categoria
+use App\Http\Controllers\CategoriaControllers\CreateCategoriaController;
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [LoginControllers::class, 'login'])->middleware('throttle:5,1');
@@ -50,4 +52,8 @@ Route::prefix('historic_equipaments')->group(function () {
     Route::get('/all', [GetAllHistoricEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-historic-equipaments']);
     Route::get('/get', [GetHistoricEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-historic-equipaments']);
     Route::post('/create', [CreateHistoricEquipamentsController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:create-historic-equipaments']);
+});
+
+Route::prefix('categoria')->group(function (){
+    Route::post('/create', [CreateCategoriaController::class, '__invoke']);
 });
