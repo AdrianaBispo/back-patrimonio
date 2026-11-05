@@ -10,6 +10,7 @@ use Override;
 class Categoria extends Model
 {
     use HasFactory;
+    /** @var string */
     protected $primaryKey = 'id';
     protected $table = 'categorias';
 
