@@ -31,7 +31,11 @@ class GetAllCategoriaController extends Controller
         ->orderBy('created_at', 'desc')
         ->when($perPage > 0, function ($query) use ($perPage) {
             return $query->paginate($perPage);
-        }); 
+        })
+        ->orWhere($request->has('search'), function ($query) use ($request) {
+            return $query->where('nome', 'like', '%' . $request->search . '%');
+        })
+        ->orWhere('id', $request->id); 
         return response()->json([
             'data' => $categorias,
             'per_page' => $perPage,
