@@ -15,35 +15,47 @@ class GetAllCategoriaController extends Controller
     public function __invoke(Request $request)
     {
         $perPage = (int) $request->query('per_page', 0);
-
-        $categorias = Categoria::query()
-        ->select('id', 'nome', 'tipo', 'nota',
-        DB::raw("
-            CASE
-                WHEN tipo = 'AC' THEN 'Acessório'
-                WHEN tipo = 'AT' THEN 'Ativo'
-                WHEN tipo = 'CO' THEN 'Consumível'
-                WHEN tipo = 'LI' THEN 'Licença'
-                WHEN tipo = 'CP' THEN 'Componente'
-            END as tipo_nome
-        "))
-        
-        ->orderBy('created_at', 'desc')
-        ->when($perPage > 0, function ($query) use ($perPage) {
-            return $query->paginate($perPage);
-        })
-        ->orWhere($request->has('search'), function ($query) use ($request) {
-            return $query->where('nome', 'like', '%' . $request->search . '%');
-        })
-        ->orWhere('id', $request->id); 
+    
+        $query = Categoria::query()
+            ->select(
+                'id',
+                'nome',
+                'tipo',
+                'nota',
+                DB::raw("
+                    CASE
+                        WHEN tipo = 'AC' THEN 'Acessório'
+                        WHEN tipo = 'AT' THEN 'Ativo'
+                        WHEN tipo = 'CO' THEN 'Consumível'
+                        WHEN tipo = 'LI' THEN 'Licença'
+                        WHEN tipo = 'CP' THEN 'Componente'
+                    END as tipo_nome
+                ")
+            )
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $query->where('nome', 'like', '%' . $request->search . '%');
+            })
+            ->when($request->filled('id'), function ($query) use ($request) {
+                $query->where('id', $request->id);
+            })
+            ->orderBy('created_at', 'desc');
+    
+        if ($perPage > 0) {
+            $categorias = $query->paginate($perPage);
+        } else {
+            $categorias = $query->get();
+        }
+    
         return response()->json([
-            'data' => $categorias,
+            'data' => $categorias instanceof \Illuminate\Pagination\LengthAwarePaginator
+                ? $categorias->items()
+                : $categorias,
             'per_page' => $perPage,
-            'total' => $categorias->total(),
-            'current_page' => $categorias->currentPage(),
-            'last_page' => $categorias->lastPage(),
-            'from' => $categorias->firstItem(),
-            'to' => $categorias->lastItem(),
+            'total' => $categorias instanceof \Illuminate\Pagination\LengthAwarePaginator
+                ? $categorias->total()
+                : $categorias->count(),
+            'current_page' => $perPage > 0 ? $categorias->currentPage() : 1,
+            'last_page' => $perPage > 0 ? $categorias->lastPage() : 1,
         ]);
     }
 }
