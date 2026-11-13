@@ -10,8 +10,8 @@ class TipoEquipamento extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id';
-    protected $table = 'status';
+    protected $table = 'tipo_equipamento';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['descricao', 'name', 'ativo'];
 
 }
