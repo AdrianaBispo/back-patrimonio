@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tipo_equipamentos', function (Blueprint $table) {
             $table->id();
-            $table->string('descricao');
-            $table->string('name');
+            $table->string('descricao', 150);
+            $table->string('name', 70);
             $table->boolean('ativo')->default(true);
             $table->timestamps();
         });
