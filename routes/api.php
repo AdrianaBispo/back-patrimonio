@@ -26,6 +26,10 @@ use App\Http\Controllers\HistoricEquipaments\CreateHistoricEquipamentsController
 use App\Http\Controllers\CategoriaControllers\CreateCategoriaController;
 use App\Http\Controllers\CategoriaControllers\GetAllCategoriaController;
 use App\Http\Controllers\CategoriaControllers\UpdateCategoriaController;
+#TipoEquipamento
+use App\Http\Controllers\TipoEquipamento\CreateTipoEquipamentoController;
+use App\Http\Controllers\TipoEquipamento\GetTipoEquipamentoController;
+use App\Http\Controllers\TipoEquipamento\UpdateTipoEquipamentoController;
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [LoginControllers::class, 'login'])->middleware('throttle:5,1');
@@ -60,4 +64,10 @@ Route::prefix('categoria')->group(function (){
     Route::post('/create', [CreateCategoriaController::class, '__invoke']);
     Route::get('/all', [GetAllCategoriaController::class, '__invoke']);
     Route::put('/update/{id}', [UpdateCategoriaController::class, '__invoke']); //->middleware(['cookie.jwt.auth', 'permission:update-categoria']);
+});
+
+route::prefix('tipo_equipamento')->group(function (){
+    Route::post('/create', [CreateTipoEquipamentoController::class, '__invoke']);
+    Route::get('/all', [GetTipoEquipamentoController::class, '__invoke']);
+    Route::put('/update/{id}', [UpdateTipoEquipamentoController::class, '__invoke']); //->middleware(['cookie.jwt.auth', 'permission:update-tipo-equipamento']);
 });
