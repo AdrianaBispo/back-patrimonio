@@ -24,10 +24,18 @@ cp .env.example .env   # se ainda não existir .env
 php artisan key:generate
 php artisan jwt:secret
 php artisan migrate
+php artisan db:seed
 php artisan serve
 ```
 
 A API fica disponível em `http://127.0.0.1:8000`.
+
+O seed cria dois usuários, ambos com a senha `password`:
+
+| Nome | E-mail | Role |
+|------|--------|------|
+| Admin | `admin@example.com` | `admin` |
+| User | `user@example.com` | `user` |
 
 ### Dados iniciais
 
@@ -88,6 +96,7 @@ O login devolve o JWT no JSON **e** no cookie HttpOnly `access_token`.
 | `DELETE` | `/api/auth/users/{id}` | Cookie | Inativar usuário |
 | `POST` | `/api/auth/logout` | Cookie | Invalidar token |
 | `GET` | `/api/auth/user` | Cookie | Usuário autenticado |
+| `GET` | `/api/auth/users` | Não | Listar usuários |
 | `POST` | `/api/permissions/create` | Cookie | Criar permissão |
 | `GET` | `/api/roles/all` | Cookie | Listar roles (`id`, `name`) |
 | `PUT` | `/api/roles/update/{id}` | Cookie | Sincronizar permissões da role |
@@ -98,6 +107,9 @@ O login devolve o JWT no JSON **e** no cookie HttpOnly `access_token`.
 | `GET` | `/api/historic_equipaments/all` | Cookie + `get-all-historic-equipaments` | Listar histórico |
 | `GET` | `/api/historic_equipaments/get` | Cookie + `get-historic-equipaments` | Filtrar histórico |
 | `POST` | `/api/historic_equipaments/create` | Cookie + `create-historic-equipaments` | Registrar histórico |
+| `POST` | `/api/categoria/create` | Não | Criar categoria |
+| `GET` | `/api/categoria/all` | Não | Listar categorias |
+| `PUT` | `/api/categoria/update/{id}` | Não | Atualizar categoria |
 
 ---
 
@@ -596,6 +608,125 @@ Permissão: `create-historic-equipaments`.
 - `422` — equipamento, status ou usuário inexistente
 - `500` — falha ao criar o histórico
 
+---
+
+### Listar usuários
+
+`GET /api/auth/users`
+
+A rota está publicada sem o middleware de cookie.
+
+**Query:**
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| `name` | string | Não | `like` no nome |
+| `id` | uuid | Não | ID do usuário (`orWhere`) |
+| `per_page` | int | Não | Paginação do Laravel quando maior que 0 |
+
+Sem `per_page`, a resposta é um array. Com `per_page`, o formato paginado do Laravel (`data`, `current_page`, `total`).
+
+Celular e CPF voltam formatados. O nome do departamento vem em `departamento_name`.
+
+---
+
+### Criar categoria
+
+`POST /api/categoria/create`
+
+**Body (JSON):**
+
+| Campo | Tipo | Obrigatório | Regras |
+|-------|------|-------------|--------|
+| `nome` | string | Sim | máx. 70 |
+| `tipo` | string | Sim | `AC`, `AT`, `CO`, `LI` ou `CP` |
+| `nota` | string | Não | máx. 500 |
+
+| Código | Significado |
+|--------|-------------|
+| `AC` | Acessório |
+| `AT` | Ativo |
+| `CO` | Consumível |
+| `LI` | Licença |
+| `CP` | Componente |
+
+```json
+{
+  "nome": "Notebook",
+  "tipo": "AT",
+  "nota": "Equipamentos de informática"
+}
+```
+
+**Resposta `201`:**
+
+```json
+{
+  "message": "Categoria criado com sucesso",
+  "categoria": { }
+}
+```
+
+**Erros comuns:**
+
+- `422` — validação de campos
+- `500` — falha ao criar a categoria
+
+---
+
+### Listar categorias
+
+`GET /api/categoria/all`
+
+**Query:**
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| `search` | string | Não | `like` no nome |
+| `id` | id | Não | ID exato |
+| `per_page` | int | Não | Paginação quando maior que 0 |
+
+**Resposta `200`:**
+
+```json
+{
+  "data": [],
+  "per_page": 0,
+  "total": 0,
+  "current_page": 1,
+  "last_page": 1
+}
+```
+
+Cada item inclui `tipo_nome` (rótulo do código `tipo`).
+
+---
+
+### Atualizar categoria
+
+`PUT /api/categoria/update/{id}`
+
+**Body (JSON):**
+
+| Campo | Tipo | Obrigatório | Regras |
+|-------|------|-------------|--------|
+| `nome` | string | Sim | máx. 70 |
+| `tipo` | string | Sim | máx. 2 caracteres |
+| `nota` | string | Não | máx. 500 |
+
+**Resposta `200`:**
+
+```json
+{
+  "message": "Categoria atualizada com sucesso"
+}
+```
+
+**Erros comuns:**
+
+- `404` — categoria não encontrada
+- `422` — validação de campos
+
 ## Senhas
 
 O model `User` usa o cast `'password' => 'hashed'`. Envie a senha em texto puro no JSON; o Laravel aplica o hash automaticamente. Não use `Hash::make` no controller junto com esse cast (evita hash duplo e quebra o login).
@@ -610,12 +741,13 @@ app/
   Http/Controllers/Permissions/            # criação de permissões
   Http/Controllers/EquipamentoControllers/ # CRUD de equipamentos
   Http/Controllers/HistoricEquipaments/    # histórico de equipamentos
+  Http/Controllers/CategoriaControllers/   # categorias de equipamento
   Middleware/JwtMiddleware.php             # proteção JWT (alias jwt.auth)
   Models/User.php
   Models/Departamento.php
 routes/
   api.php                                  # rotas da API
-database/migrations/                       # users, departamentos, equipamentos, histórico, permissions
+database/migrations/                       # users, departamentos, equipamentos, categorias, histórico, permissions
 ```
 
 ## Exemplos com cURL
@@ -680,6 +812,16 @@ curl -X POST http://127.0.0.1:8000/api/historic_equipaments/create \
 curl "http://127.0.0.1:8000/api/historic_equipaments/all" \
   -H "Accept: application/json" \
   -b cookies.txt
+
+# Listar categorias
+curl "http://127.0.0.1:8000/api/categoria/all?search=Notebook" \
+  -H "Accept: application/json"
+
+# Criar categoria
+curl -X POST http://127.0.0.1:8000/api/categoria/create \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d "{\"nome\":\"Notebook\",\"tipo\":\"AT\",\"nota\":\"Equipamentos de informática\"}"
 
 # Logout (cookie)
 curl -X POST http://127.0.0.1:8000/api/auth/logout \
