@@ -81,7 +81,16 @@ class DatabaseSeeder extends Seeder
     {
         
         $roles['admin']->syncPermissions($permissions);
-        $roles['user']->syncPermissions($permissions->where('name', 'read-users'));
+        $roles['user']->syncPermissions($permissions->whereIn('name', [
+            'read-users',
+            'get-all-equipaments',
+            'get-equipaments',
+            'get-all-historic-equipaments',
+            'get-historic-equipaments',
+            'get-all-categoria',
+            'get-all-tipo-equipamento',
+            'get-all-status',
+        ]));
 
     }
 
