@@ -15,17 +15,21 @@ class UpdateTipoEquipamentoController extends Controller
     {
         $data = $request->validate([
             'id' => 'required|exists:tipo_equipamentos,id',
-            'descricao' => 'required|string|max:70',
-            'name' => 'required|string|max:70',
+            'nota' => 'required|string|max:500',
+            'nome' => 'required|string|max:70',
             'ativo' => 'required|boolean',
         ], [
             'id.required' => 'O id é obrigatório',
             'id.exists' => 'O id não existe',
+            'nota.required' => 'A nota é obrigatória',
+            'nota.max' => 'A nota deve ter no máximo 500 caracteres',
+            'nome.required' => 'O nome é obrigatório',
+            'nome.max' => 'O nome deve ter no máximo 70 caracteres',
         ]);
 
         $tipoEquipamento = TipoEquipamento::find($data['id']);
-        $tipoEquipamento->descricao = $data['descricao'];
-        $tipoEquipamento->name = $data['name'];
+        $tipoEquipamento->nota = $data['nota'];
+        $tipoEquipamento->nome = $data['nome'];
         $tipoEquipamento->ativo = $data['ativo'];
         $tipoEquipamento->save();
 

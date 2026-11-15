@@ -12,16 +12,16 @@ class CreateTipoEquipamentoController extends Controller
     public function __invoke(Request $request)
     {
         $data = $request->validate([
-            'descricao' => 'required|string|max:70',
-            'name' => 'required|string|max:70',
+            'nota' => 'required|string|max:500',
+            'nome' => 'required|string|max:70',
             'ativo' => 'required|boolean',
         ], [
-            'descricao.required' => 'O descricao é obrigatório',
-            'descricao.string' => 'O descricao deve ser uma string',
-            'descricao.max' => 'O descricao deve ter no máximo 150 caracteres',
-            'name.required' => 'O name é obrigatório',
-            'name.string' => 'O name deve ser uma string',
-            'name.max' => 'O name deve ter no máximo 70 caracteres',
+            'nota.required' => 'A nota é obrigatória',
+            'nota.string' => 'A nota deve ser uma string',
+            'nota.max' => 'A nota deve ter no máximo 500 caracteres',
+            'nome.required' => 'O nome é obrigatório',
+            'nome.string' => 'O nome deve ser uma string',
+            'nome.max' => 'O nome deve ter no máximo 70 caracteres',
             'ativo.required' => 'O ativo é obrigatório',
             'ativo.boolean' => 'O ativo deve ser um booleano',
         ]);
