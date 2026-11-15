@@ -110,6 +110,11 @@ O login devolve o JWT no JSON **e** no cookie HttpOnly `access_token`.
 | `POST` | `/api/categoria/create` | Não | Criar categoria |
 | `GET` | `/api/categoria/all` | Não | Listar categorias |
 | `PUT` | `/api/categoria/update/{id}` | Não | Atualizar categoria |
+| `POST` | `/api/tipo_equipamento/create` | Não | Criar tipo de equipamento |
+| `GET` | `/api/tipo_equipamento/all` | Não | Listar tipos de equipamento |
+| `PUT` | `/api/tipo_equipamento/update/{id}` | Não | Atualizar tipo de equipamento |
+| `PUT` | `/api/tipo_equipamento/desactivate/{id}` | Não | Desativar tipo de equipamento |
+| `PUT` | `/api/tipo_equipamento/activate/{id}` | Não | Ativar tipo de equipamento |
 
 ---
 
@@ -727,6 +732,139 @@ Cada item inclui `tipo_nome` (rótulo do código `tipo`).
 - `404` — categoria não encontrada
 - `422` — validação de campos
 
+---
+
+## Tipos de equipamento
+
+As rotas ficam sob `/api/tipo_equipamento` e, por enquanto, não exigem cookie nem permissão.
+
+Campos persistidos em `tipo_equipamentos`:
+
+| Campo | Tipo | Regras |
+|-------|------|--------|
+| `nome` | string | obrigatório, máx. 70 |
+| `nota` | string | obrigatório, máx. 500 |
+| `ativo` | boolean | obrigatório na criação e na atualização |
+
+### Criar tipo de equipamento
+
+`POST /api/tipo_equipamento/create`
+
+**Body (JSON):**
+
+| Campo | Tipo | Obrigatório | Regras |
+|-------|------|-------------|--------|
+| `nome` | string | Sim | máx. 70 |
+| `nota` | string | Sim | máx. 500 |
+| `ativo` | boolean | Sim | `true` ou `false` |
+
+```json
+{
+  "nome": "Notebook",
+  "nota": "Equipamentos portáteis de informática",
+  "ativo": true
+}
+```
+
+**Resposta `200`:** o registro criado (`id`, `nome`, `nota`, `ativo`, `created_at`, `updated_at`).
+
+**Erros comuns:**
+
+- `422` — validação de campos
+- `500` — falha ao persistir
+
+---
+
+### Listar tipos de equipamento
+
+`GET /api/tipo_equipamento/all`
+
+**Query:**
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| `per_page` | int | Não | Tamanho da página. O padrão é `0` |
+
+A lista vem ordenada por `id` decrescente e devolve `id`, `nota`, `nome` e `ativo`.
+
+**Resposta `200`:**
+
+```json
+{
+  "data": {
+    "data": []
+  },
+  "total": 0,
+  "page": 1,
+  "per_page": 15,
+  "last_page": 1,
+  "from": null,
+  "to": null
+}
+```
+
+Os registros ficam em `data.data`, porque o paginador do Laravel é colocado dentro de `data`.
+
+---
+
+### Atualizar tipo de equipamento
+
+`PUT /api/tipo_equipamento/update/{id}`
+
+O `id` validado é o do body, não o da URL.
+
+**Body (JSON):**
+
+| Campo | Tipo | Obrigatório | Regras |
+|-------|------|-------------|--------|
+| `id` | int | Sim | deve existir em `tipo_equipamentos` |
+| `nome` | string | Sim | máx. 70 |
+| `nota` | string | Sim | máx. 500 |
+| `ativo` | boolean | Sim | `true` ou `false` |
+
+```json
+{
+  "id": 1,
+  "nome": "Notebook",
+  "nota": "Equipamentos portáteis",
+  "ativo": true
+}
+```
+
+**Resposta `200`:** o registro atualizado.
+
+**Erros comuns:**
+
+- `422` — `id` inexistente ou validação de campos
+
+---
+
+### Desativar tipo de equipamento
+
+`PUT /api/tipo_equipamento/desactivate/{id}`
+
+Define `ativo` como `false`. O id vai na URL.
+
+**Resposta `200`:** o registro com `ativo: false`.
+
+**Erros comuns:**
+
+- `404` — tipo de equipamento não encontrado
+
+---
+
+### Ativar tipo de equipamento
+
+`PUT /api/tipo_equipamento/activate/{id}`
+
+Define `ativo` como `true`. O id vai na URL.
+
+**Resposta `200`:** o registro com `ativo: true`.
+
+**Erros comuns:**
+
+- `404` — tipo de equipamento não encontrado
+
 ## Senhas
 
 O model `User` usa o cast `'password' => 'hashed'`. Envie a senha em texto puro no JSON; o Laravel aplica o hash automaticamente. Não use `Hash::make` no controller junto com esse cast (evita hash duplo e quebra o login).
@@ -742,12 +880,13 @@ app/
   Http/Controllers/EquipamentoControllers/ # CRUD de equipamentos
   Http/Controllers/HistoricEquipaments/    # histórico de equipamentos
   Http/Controllers/CategoriaControllers/   # categorias de equipamento
+  Http/Controllers/TipoEquipamento/        # tipos de equipamento
   Middleware/JwtMiddleware.php             # proteção JWT (alias jwt.auth)
   Models/User.php
   Models/Departamento.php
 routes/
   api.php                                  # rotas da API
-database/migrations/                       # users, departamentos, equipamentos, categorias, histórico, permissions
+database/migrations/                       # users, departamentos, equipamentos, categorias, tipos de equipamento, histórico, permissions
 ```
 
 ## Exemplos com cURL
@@ -822,6 +961,30 @@ curl -X POST http://127.0.0.1:8000/api/categoria/create \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d "{\"nome\":\"Notebook\",\"tipo\":\"AT\",\"nota\":\"Equipamentos de informática\"}"
+
+# Criar tipo de equipamento
+curl -X POST http://127.0.0.1:8000/api/tipo_equipamento/create \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d "{\"nome\":\"Notebook\",\"nota\":\"Equipamentos portateis de informatica\",\"ativo\":true}"
+
+# Listar tipos de equipamento
+curl "http://127.0.0.1:8000/api/tipo_equipamento/all?per_page=15" \
+  -H "Accept: application/json"
+
+# Atualizar tipo de equipamento
+curl -X PUT http://127.0.0.1:8000/api/tipo_equipamento/update/1 \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d "{\"id\":1,\"nome\":\"Notebook\",\"nota\":\"Equipamentos portateis\",\"ativo\":true}"
+
+# Desativar tipo de equipamento
+curl -X PUT http://127.0.0.1:8000/api/tipo_equipamento/desactivate/1 \
+  -H "Accept: application/json"
+
+# Ativar tipo de equipamento
+curl -X PUT http://127.0.0.1:8000/api/tipo_equipamento/activate/1 \
+  -H "Accept: application/json"
 
 # Logout (cookie)
 curl -X POST http://127.0.0.1:8000/api/auth/logout \
