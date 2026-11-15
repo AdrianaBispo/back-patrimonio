@@ -3,27 +3,22 @@
 namespace App\Http\Controllers\TipoEquipamento;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\TipoEquipamento;
+use Illuminate\Http\Request;
 
 class DesactivateTipoEquipamentoController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, string $id)
     {
-        $data = $request->validate([
-            'id' => 'required|exists:tipo_equipamentos,id',
-        ], [
-            'id.required' => 'O id é obrigatório',
-            'id.exists' => 'O id não existe',
-        ]);
+        $tipoEquipamento = TipoEquipamento::find($id);
 
-        $tipoEquipamento = TipoEquipamento::find($data['id']);
+        if (! $tipoEquipamento) {
+            return response()->json(['message' => 'Tipo de equipamento não encontrado'], 404);
+        }
+
         $tipoEquipamento->ativo = false;
         $tipoEquipamento->save();
 
-        return response()->json($tipoEquipamento);
+        return response()->json($tipoEquipamento, 200);
     }
 }
