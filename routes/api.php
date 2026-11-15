@@ -27,7 +27,9 @@ use App\Http\Controllers\CategoriaControllers\CreateCategoriaController;
 use App\Http\Controllers\CategoriaControllers\GetAllCategoriaController;
 use App\Http\Controllers\CategoriaControllers\UpdateCategoriaController;
 #TipoEquipamento
+use App\Http\Controllers\TipoEquipamento\ActivateTipoEquipamentoController;
 use App\Http\Controllers\TipoEquipamento\CreateTipoEquipamentoController;
+use App\Http\Controllers\TipoEquipamento\DesactivateTipoEquipamentoController;
 use App\Http\Controllers\TipoEquipamento\GetTipoEquipamentoController;
 use App\Http\Controllers\TipoEquipamento\UpdateTipoEquipamentoController;
 
@@ -70,4 +72,6 @@ route::prefix('tipo_equipamento')->group(function (){
     Route::post('/create', [CreateTipoEquipamentoController::class, '__invoke']);
     Route::get('/all', [GetTipoEquipamentoController::class, '__invoke']);
     Route::put('/update/{id}', [UpdateTipoEquipamentoController::class, '__invoke']); //->middleware(['cookie.jwt.auth', 'permission:update-tipo-equipamento']);
+    Route::put('/desactivate/{id}', [DesactivateTipoEquipamentoController::class, '__invoke']);
+    Route::put('/activate/{id}', [ActivateTipoEquipamentoController::class, '__invoke']);
 });
