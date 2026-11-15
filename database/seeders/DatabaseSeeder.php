@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Status;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -20,6 +21,22 @@ class DatabaseSeeder extends Seeder
         $this->assignPermissionsToRoles($roles, $permissions);
         $users = $this->createUsers();
         $this->assignRolesToUsers($users, $roles);
+        $this->createStatus();
+    }
+
+    private function createStatus(): void
+    {
+        $statusNames = [
+            'Disponível',
+            'Em uso',
+            'Em manutenção',
+            'Emprestado',
+            'Baixado',
+        ];
+
+        foreach ($statusNames as $statusName) {
+            Status::firstOrCreate(['nome' => $statusName]);
+        }
     }
 
     private function createRoles(): array
@@ -44,6 +61,15 @@ class DatabaseSeeder extends Seeder
             'create-historic-equipaments',
             'get-all-historic-equipaments',
             'get-historic-equipaments',
+            'create-categoria',
+            'get-all-categoria',
+            'update-categoria',
+            'create-tipo-equipamento',
+            'get-all-tipo-equipamento',
+            'update-tipo-equipamento',
+            'desactivate-tipo-equipamento',
+            'activate-tipo-equipamento',
+            'get-all-status',
         ];
         foreach ($permissionsNames as $permissionName) {
             Permission::firstOrCreate(['name' => $permissionName]);
