@@ -9,11 +9,22 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 
 class Equipamento extends Model
 {
-    use HasFactory;
-    protected $primaryKey = 'id';
-    protected $table = 'equipamentos';
+    use HasFactory, HasUuids;
+    protected $primaryKey = 'eqi_id';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    protected $table = 'equipament';
 
-    protected $fillable = ['name', 'description', 'serie', 'status_id', 'imagem_url', 'usr_id'];
+    protected $fillable = [
+        'eqi_name',
+        'eqi_descricao',
+        'eqi_serie',
+        'eqi_status_id',
+        'imagem_url',
+        'usuario_id',
+        'categoria_id',
+        'tipo_equipamento_id',
+    ];
 
     public function status()
     {
@@ -23,5 +34,15 @@ class Equipamento extends Model
     public function usuario()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class);
+    }
+
+    public function tipoEquipamento()
+    {
+        return $this->belongsTo(TipoEquipamento::class);
     }
 }

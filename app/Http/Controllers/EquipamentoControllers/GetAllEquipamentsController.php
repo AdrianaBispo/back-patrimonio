@@ -12,11 +12,19 @@ class GetAllEquipamentsController extends Controller
 
         $perPage = (int) $request->query('per_page', 0);
     
-        $query = Equipamento::query()->
-        leftJoin('status', 'equipamentos.status_id', '=', 'status.id')->
-        leftJoin('users', 'equipamentos.usuario_id', '=', 'users.id')
-        ->select('equipamentos.*', 'status.nome as status_nome', 'users.nome as usuario_nome')
-        ->orderBy('equipamentos.nome');
+        $query = Equipamento::query()
+        ->leftJoin('status', 'equipament.eqi_status_id', '=', 'status.sta_id')
+        ->leftJoin('users', 'equipament.usuario_id', '=', 'users.id')
+        ->leftJoin('categorias', 'equipament.categoria_id', '=', 'categorias.id')
+        ->leftJoin('tipo_equipamentos', 'equipament.tipo_equipamento_id', '=', 'tipo_equipamentos.id')
+        ->select(
+            'equipament.*',
+            'status.sta_name as status_nome',
+            'users.nome as usuario_nome',
+            'categorias.nome as categoria_nome',
+            'tipo_equipamentos.nome as tipo_equipamento_nome',
+        )
+        ->orderBy('equipament.eqi_name');
 
         if ($perPage > 0) {
             return response()->json($query->paginate($perPage));

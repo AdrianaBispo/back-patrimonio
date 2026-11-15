@@ -21,6 +21,8 @@ class UpdateEquipamentsController extends Controller
             'status_id' => 'required|integer|exists:status,id',
             'imagem_url' => 'required|string|max:255',
             'usuario_id' => 'required|uuid|exists:users,id',
+            'categoria_id' => 'required|integer|exists:categorias,id',
+            'tipo_equipamento_id' => 'required|integer|exists:tipo_equipamentos,id',
         ], [
             'nome.required' => 'O nome é obrigatório',
             'nome.string' => 'O nome deve ser uma string',
@@ -39,6 +41,10 @@ class UpdateEquipamentsController extends Controller
             'imagem_url.required' => 'A imagem é obrigatória',
             'imagem_url.string' => 'A imagem deve ser uma string',
             'imagem_url.max' => 'A imagem deve ter no máximo 255 caracteres',
+            'categoria_id.required' => 'A categoria é obrigatória',
+            'categoria_id.exists' => 'A categoria informada não existe',
+            'tipo_equipamento_id.required' => 'O tipo de equipamento é obrigatório',
+            'tipo_equipamento_id.exists' => 'O tipo de equipamento informado não existe',
         ]);
         $status = Status::find($data['status_id']);
         if (!$status) {
@@ -50,7 +56,16 @@ class UpdateEquipamentsController extends Controller
         }
 
         try{
-            $equipament -> update($data);
+            $equipament->update([
+                'eqi_name' => $data['nome'],
+                'eqi_descricao' => $data['descricao'],
+                'eqi_serie' => $data['serie'],
+                'eqi_status_id' => $status->id,
+                'imagem_url' => $data['imagem_url'],
+                'usuario_id' => $usuario->id,
+                'categoria_id' => $data['categoria_id'],
+                'tipo_equipamento_id' => $data['tipo_equipamento_id'],
+            ]);
             return response()->json(['message' => 'Equipamento atualizado com sucesso'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erro ao atualizar equipamento'], 500);
