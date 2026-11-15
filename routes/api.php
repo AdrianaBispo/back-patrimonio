@@ -32,6 +32,8 @@ use App\Http\Controllers\TipoEquipamento\CreateTipoEquipamentoController;
 use App\Http\Controllers\TipoEquipamento\DesactivateTipoEquipamentoController;
 use App\Http\Controllers\TipoEquipamento\GetTipoEquipamentoController;
 use App\Http\Controllers\TipoEquipamento\UpdateTipoEquipamentoController;
+#Status
+use App\Http\Controllers\StatusControllers\GetAllStatusController;
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [LoginControllers::class, 'login'])->middleware('throttle:5,1');
@@ -63,15 +65,19 @@ Route::prefix('historic_equipaments')->group(function () {
 });
 
 Route::prefix('categoria')->group(function (){
-    Route::post('/create', [CreateCategoriaController::class, '__invoke']);
-    Route::get('/all', [GetAllCategoriaController::class, '__invoke']);
-    Route::put('/update/{id}', [UpdateCategoriaController::class, '__invoke']); //->middleware(['cookie.jwt.auth', 'permission:update-categoria']);
+    Route::post('/create', [CreateCategoriaController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:create-categoria']);
+    Route::get('/all', [GetAllCategoriaController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-categoria']);
+    Route::put('/update/{id}', [UpdateCategoriaController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:update-categoria']);
 });
 
 route::prefix('tipo_equipamento')->group(function (){
-    Route::post('/create', [CreateTipoEquipamentoController::class, '__invoke']);
-    Route::get('/all', [GetTipoEquipamentoController::class, '__invoke']);
-    Route::put('/update/{id}', [UpdateTipoEquipamentoController::class, '__invoke']); //->middleware(['cookie.jwt.auth', 'permission:update-tipo-equipamento']);
-    Route::put('/desactivate/{id}', [DesactivateTipoEquipamentoController::class, '__invoke']);
-    Route::put('/activate/{id}', [ActivateTipoEquipamentoController::class, '__invoke']);
+    Route::post('/create', [CreateTipoEquipamentoController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:create-tipo-equipamento']);
+    Route::get('/all', [GetTipoEquipamentoController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-tipo-equipamento']);
+    Route::put('/update/{id}', [UpdateTipoEquipamentoController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:update-tipo-equipamento']);
+    Route::put('/desactivate/{id}', [DesactivateTipoEquipamentoController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:desactivate-tipo-equipamento']);
+    Route::put('/activate/{id}', [ActivateTipoEquipamentoController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:activate-tipo-equipamento']);
+});
+
+Route::prefix('status')->group(function () {
+    Route::get('/all', [GetAllStatusController::class, '__invoke'])->middleware(['cookie.jwt.auth', 'permission:get-all-status']);
 });
