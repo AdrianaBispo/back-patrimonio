@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class HistoricEquipaments extends Model
 {
-    use hasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $primaryKey = 'id';
     protected $table = 'historic_equipaments';
 
@@ -15,7 +17,7 @@ class HistoricEquipaments extends Model
 
     public function equipament()
     {
-        return $this->belongsTo(Equipamento::class);
+        return $this->belongsTo(Equipamento::class, 'equipament_id', 'eqi_id');
     }
 
     public function status()

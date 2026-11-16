@@ -5,9 +5,6 @@ namespace App\Http\Controllers\HistoricEquipaments;
 use Illuminate\Http\Request;
 use App\Models\HistoricEquipaments;
 use App\Http\Controllers\Controller;
-use App\Models\Equipaments;
-use App\Models\Status;
-use App\Models\Users;
 
 class GetHistoricEquipamentsController extends Controller
 {
@@ -20,34 +17,32 @@ class GetHistoricEquipamentsController extends Controller
         $user_name = $request['user_name'];
 
         $query = HistoricEquipaments::query()->
-        leftJoin('equipaments', 'historic_equipaments.equipament_id', '=', 'equipaments.id')->
+        leftJoin('equipament', 'historic_equipaments.equipament_id', '=', 'equipament.eqi_id')->
         leftJoin('status', 'historic_equipaments.status_id', '=', 'status.id')->
         leftJoin('users', 'historic_equipaments.user_id', '=', 'users.id')->
-        select('historic_equipaments.*', 'equipaments.nome as equipament_nome', 'status.nome as status_nome', 'users.nome as user_nome')->
-        orderBy('historic_equipaments.date_time');
+        select(
+            'historic_equipaments.*',
+            'historic_equipaments.created_at as date_time',
+            'equipament.eqi_name as equipament_nome',
+            'equipament.eqi_serie as equipament_serie',
+            'status.nome as status_nome',
+            'users.nome as user_nome',
+        )->
+        orderBy('historic_equipaments.created_at');
 
         if ($historic_id) {
             $query->where('historic_equipaments.id', $historic_id);
         }
         elseif ($equipament_name) {
-            $query->where('equipaments.nome', 'like', '%' . $equipament_name . '%');
+            $query->where('equipament.eqi_name', 'like', '%' . $equipament_name . '%');
         }
         elseif ($equipament_serie) {
-            $query->where('equipaments.serie', 'like', '%' . $equipament_serie . '%');
+            $query->where('equipament.eqi_serie', 'like', '%' . $equipament_serie . '%');
         }
         elseif ($user_name) {
             $query->where('users.nome', 'like', '%' . $user_name . '%');
         }
-        elseif ($equipament_name && $equipament_serie) {
-            $query->where('equipaments.nome', 'like', '%' . $equipament_name . '%')->where('equipaments.serie', 'like', '%' . $equipament_serie . '%');
-        }
-       
-        elseif ($equipament_name && $equipament_serie && $user_name) {
-            $query->where('equipaments.nome', 'like', '%' . $equipament_name . '%')->where('equipaments.serie', 'like', '%' . $equipament_serie . '%')->where('users.nome', 'like', '%' . $user_name . '%');
-        }
-        else {
-            $query->orderBy('historic_equipaments.date_time');
-        }
+
         if ($perPage > 0) {
             return response()->json($query->paginate($perPage));
         }

@@ -13,9 +13,9 @@ class CreateHistoricEquipamentsController extends Controller
     {
 
         $data = $request->validate([
-            'equipament_id' => 'required|exists:equipaments,id',
-            'status_id' => 'required|exists:status,id',
-            'user_id' => 'required|exists:users,id',
+            'equipament_id' => 'required|uuid|exists:equipament,eqi_id',
+            'status_id' => 'required|integer|exists:status,id',
+            'user_id' => 'required|uuid|exists:users,id',
         ], [
             'equipament_id.required' => 'O equipamento é obrigatório',
             'equipament_id.exists' => 'O equipamento informado não existe',
