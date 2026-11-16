@@ -34,7 +34,7 @@ class RegisterControllers extends Controller
         $data = $request->validate([
             'nome' => 'required|string|max:255',
             'celular' => 'required|string|max:20',
-            'departamento_id' => 'required|uuid|exists:departamentos,id',
+            'departamento_id' => 'nullable|uuid|exists:departamentos,id',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'roles' => 'required|array',
@@ -44,7 +44,7 @@ class RegisterControllers extends Controller
             'nome.string' => 'O nome deve ser uma string',
             'nome.max' => 'O nome deve ter no máximo 255 caracteres',
             'celular.required' => 'O celular é obrigatório',
-            'departamento_id.required' => 'O departamento é obrigatório',
+            'departamento_id.uuid' => 'O departamento deve ser um UUID válido',
             'departamento_id.exists' => 'O departamento informado não existe',
             'email.required' => 'O email é obrigatório',
             'email.email' => 'O email deve ser um email válido',
@@ -61,7 +61,7 @@ class RegisterControllers extends Controller
             $newUser = User::create([
                 'nome' => $data['nome'],
                 'celular' => $data['celular'],
-                'departamento_id' => $data['departamento_id'],
+                'departamento_id' => $data['departamento_id'] ?? null,
                 'email' => $data['email'],
                 'password' => $data['password'],
             ]);
